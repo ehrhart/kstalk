@@ -1,6 +1,8 @@
 KStalk
 =======
 
+![KStalk](http://i.imgur.com/jHZxni9.png)
+
 Players monitoring tool for KAG ([King Arthur's Gold 2D](http://kag2d.com/))
 
 Built using [node-webkit](https://github.com/rogerwang/node-webkit)
