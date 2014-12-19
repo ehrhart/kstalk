@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<meta charset="UTF-8" />
+		<title>KStalk</title>
+		
+		<link href="assets/css/style.css" rel="stylesheet">
+		
+		<script>
+			window.addEventListener('keydown', function(e) {
+				if (e.which == 123) { // F12
+					e.preventDefault();
+					require('nw.gui').Window.get().showDevTools();
+				} else if (e.which == 116) { // F5
+					e.preventDefault();
+					require('nw.gui').Window.get().reload();
+				} else if (e.which == 13) { // Return
+					submit();
+				} else if (e.which == 27) { // Escape
+					cancel();
+				}
+			});
+		</script>
+		<script src="lib/jquery.js"></script>
+		<script src="lib/jquery-ui.js"></script>
+		<script>
+			function submit(choice) {
+				global.ret = {};
+				if (choice) {
+					global.ret = {
+						choice: choice
+					};
+				}
+				require('nw.gui').Window.get().close();
+			}
+			
+			function cancel() {
+				global.ret = {};
+				require('nw.gui').Window.get().close();
+			}
+			
+			$(document).ready(function() {
+				if (global.windowArgs) {
+					$('.question').html('Would you like to remove <strong>' + global.windowArgs.username + '</strong> from the group "' + global.windowArgs.groupName + '"?');
+				}
+				$(document).on('click', 'button', function() {
+					var action = $(this).data('action');
+					var choice = $(this).data('choice');
+					if (action == 'submit') {
+						submit(choice);
+					} else if (action == 'cancel') {
+						cancel();
+					}
+				});
+			});
+		</script>
+	</head>
+	
+	<body style="padding: 20px; width: 355px;">
+		<div style="height: 60px">
+			<label>
+				<span class="label-desc label-block question"></span>
+			</label>
+		</div>
+		<button data-action="submit" data-choice="yes" class="pull-left">Yes</button>
+		<button data-action="submit" data-choice="no" class="pull-right">No</button>
+	</body>
+</html>

@@ -1,0 +1,11 @@
+<h2>What's new in v1.1.0?</h2>
+<ul>
+	<li><p>Changed the UI of some windows (remove player, remove group, rename group)</p></li>
+	<li><p>The notification popup now shows the name of the server</p></li>
+	<li><p>New option: "Also notify when the player switches to another server"</p></li>
+	<li><p>Added the ability to add a batch of players to a group (instead of adding them one by one)</p></li>
+	<li><p>New option: "Run the application at system startup"</p></li>
+	<li><p>New option: "Start the application in a mimized state"</p></li>
+	<li><p>Fixed a lot minor bugs</p></li>
+	<li><p>Tweaking</p></li>
+</ul>

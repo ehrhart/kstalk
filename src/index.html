@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>KStalk</title>
+		
+		<script>
+			window.addEventListener('keydown', function(e) {
+				if (e.which == 123) { // F12
+					e.preventDefault();
+					require('nw.gui').Window.get().showDevTools();
+				} else if (e.which == 116) { // F5
+					//e.preventDefault();
+					//require('nw.gui').Window.get().reload();
+				}
+			});
+		</script>
+		
+		<link href="assets/css/jquery-ui.min.css" rel="stylesheet">
+		<link href="assets/css/jquery.ui.theme.css" rel="stylesheet">
+		<link href="assets/css/jquery.dropdown.css" rel="stylesheet">
+		<link href="assets/css/style.css" rel="stylesheet">
+		
+		<script src="lib/jquery.js"></script>
+		<script src="lib/jquery.ajaxQueue.js"></script>
+		<script src="lib/jquery.dropdown.js"></script>
+		<script src="lib/jquery.text-autosize.js"></script>
+		<script src="lib/jquery-ui.js"></script>
+		<script src="app.js"></script>
+		<script src="lib/nw-desktop-notifications.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div class="title-bar">
+					<div class="controls left">
+						<a href="#" class="add-group icomoon-plus"><span>Add a group</span></a>
+						<a href="#" class="lookup icomoon-search"><span>Lookup</span></a>
+						<a href="#" class="icomoon-paragraph-justify-2" data-dropdown="#dropdown-changetype"></a>
+						<a href="#" class="settings icomoon-settings"></a>
+						<!--<a href="#" class="sort-players icomoon-menu"><span>Sort by status</span></a>-->
+						<!--<a href="#" class="options icomoon-cog"></a>-->
+						<div id="dropdown-changetype" class="dropdown dropdown-tip">
+							<ul class="dropdown-menu">
+								<li><a href="#" class="change-type" data-type="type0">Big list</a></li>
+								<li><a href="#" class="change-type" data-type="type1">Small list</a></li>
+								<li><a href="#" class="change-type" data-type="type2">Compact list</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="controls right">
+						<a href="#" class="loading spinner icon-spinner-2"></a>
+						<!--<a href="#" class="minimize icomoon-minus"></a>-->
+						<!--<a href="#" class="close icomoon-close"></a>-->
+					</div>
+				</div>
+			</div>
+			
+			<div id="content">
+				<div class="loading spinner icon-spinner-2" aria-hidden="true"></div>
+				<div id="watchlist"></div>
+			</div>
+			
+			<div id="footer">
+				<div class="status-bar"></div>
+			</div>
+			
+			<!--<div id="frame-border"></div>-->
+		</div>
+	</body>
+</html>

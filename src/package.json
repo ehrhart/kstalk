@@ -1,0 +1,23 @@
+{
+	"main": "index.html",
+	"name": "KStalk",
+	"description": "KStalk",
+	"version": "1.1.1",
+	"window" :
+	{
+		"icon": "assets/img/favicon.png",
+		"show": false,
+		"frame": true,
+		"toolbar": false,
+		"resizable": true,
+		"width": 490,
+		"height": 515,
+		"position": "center",
+		"min_width": 490,
+		"min_height": 515
+	},
+	"webkit": {
+		"plugin": true,
+		"page-cache": false
+	}
+}

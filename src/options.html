@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<meta charset="UTF-8" />
+		<title>KStalk</title>
+		
+		<link href="assets/css/style.css" rel="stylesheet">
+		
+		<script>
+			window.addEventListener('keydown', function(e) {
+				if (e.which == 123) { // F12
+					e.preventDefault();
+					require('nw.gui').Window.get().showDevTools();
+				} else if (e.which == 116) { // F5
+					e.preventDefault();
+					require('nw.gui').Window.get().reload();
+				}
+			});
+			
+			var Sound = {
+				audio: null,
+				play: function(path) {
+					this.audio = new Audio(path);
+					if(this.audio !== null) this.audio.pause();
+					this.audio.play();
+				}
+			};
+		</script>
+		<script src="lib/jquery.js"></script>
+		<script src="lib/jquery-ui.js"></script>
+		<script>
+			_servers = [];
+			currentServer = '';
+			
+			function save() {
+				if (typeof global.ret == 'object') {
+					var keys = Object.keys(global.ret);
+					for (var i = 0; i < keys.length; i++) {
+						var k = keys[i];
+						if (global.ret[k] !== undefined) {
+							var $input = $('#opt_' + k);
+							if ($input.length == 0) {
+								//alert('ERROR: Could not find field opt_' + k);
+								continue;
+							}
+							
+							if ($input.prop('tagName') == 'INPUT') {
+								if ($input.attr('type') == 'text') {
+									global.ret[keys[i]] = $input.val();
+								} else if ($input.attr('type') == 'checkbox') {
+									global.ret[keys[i]] = $input.is(':checked');
+								}
+							} else if ($input.prop('tagName') == 'SELECT') {
+								global.ret[keys[i]] = $input.val();
+							} else if ($input.prop('tagName') == 'TEXTAREA') {
+								global.ret[keys[i]] = $input.val();
+							}
+						}
+					}
+				}
+				//console.log(global.ret);
+				require('nw.gui').Window.get().close();
+			}
+			
+			function load() {
+				console.log(global.ret);
+				
+				// Values
+				if (typeof global.ret == 'object') {
+					var keys = Object.keys(global.ret);
+					for (var i = 0; i < keys.length; i++) {
+						var k = keys[i];
+						if (global.ret[k] !== undefined) {
+							var $input = $('#opt_' + k);
+							if ($input.length == 0) {
+								console.log('WARNING: Could not find field opt_' + k);
+								continue;
+							}
+							
+							if ($input.prop('tagName') == 'INPUT') {
+								if ($input.attr('type') == 'text') {
+									$input.val(global.ret[k]);
+								} else if ($input.attr('type') == 'checkbox') {
+									if (global.ret[k]) {
+										$input.attr('checked', 'checked');
+									}
+								}
+							} else if ($input.prop('tagName') == 'SELECT') {
+								$input.val(global.ret[k]);
+								//$input.find('option[value="' + global.ret[k] + '"]').attr('selected', 'selected');
+							} else if ($input.prop('tagName') == 'TEXTAREA') {
+								$input.val(global.ret[k]);
+							}
+						}
+					}
+				}
+				
+				// Platform dependant variables
+				$('.platform').hide();
+				if (process.platform == 'win32') {
+					$('.platform-win32').show();
+				} else if (process.platform == 'darwin') {
+					$('.platform-darwin').show();
+				} else if (process.platform == 'linux') {
+					$('.platform-linux').show();
+				}
+			}
+			
+			function cancel() {
+				require('nw.gui').Window.get().close();
+			}
+			
+			$(window).on('load resize', function() {
+				$('.main').width($('body').width()-$('.left').width()-40).height($('body').height()-90);
+				$('.bottom').width($('body').width()-$('.left').width());
+			});
+			
+			$(document).ready(function() {
+				load();
+			});
+		</script>
+		
+		<style>
+			:focus {
+				outline-color:#53777A!important;
+			}
+
+			::-webkit-scrollbar {
+				-webkit-appearance:none;
+				width:8px;
+				height: 8px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background:rgba(0,0,0,0.3);
+			}
+
+			::-webkit-scrollbar-thumb:hover {
+				background:rgba(0,0,0,0.4);
+			}
+
+			::selection {
+				background:#2d7e99; 
+				color:#fff;
+			}
+			
+			html, body {
+				padding: 0;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+			}
+			
+			body {
+				-webkit-user-select:none;
+				background:#e6e6e6;
+				color:#333;
+				cursor:default;
+				font-family:calibri;
+				font-size: 14px;
+				overflow:hidden;
+			}
+			
+			button, .prepros-button {
+				background-image: -webkit-linear-gradient(top, #fefefe, #dedede);
+				height: 24px;
+				padding: 0 10px;
+				border: 1px solid #838383;
+				border-radius: 3px;
+				box-shadow: 0 0 10px 0px #d0d0d0;
+				text-shadow: 0 1px white;
+			}
+			button:hover, .prepros-button:hover {
+				box-shadow: 0 0 5px 0 #fefefe;
+			}
+			button:active, .prepros-button:active {
+				box-shadow: inset 0 0 5px 1px #dedede;
+			}
+			.prepros-button {
+				top: 0px;
+				left: 5px;
+				display: inline-block;
+				margin-top:5px;
+				margin-right:10px;
+				height:30px;
+				color:#777;
+				line-height:30px;
+				text-align:center;
+				text-decoration:none;
+				cursor:default;
+				-webkit-app-region:no-drag;
+				padding: 0 10px;
+			}
+			.prepros-button span {
+				font-family: Calibri;
+				font-size: 16px;
+				position: relative;
+				top: -1px;
+				padding-left: 5px;
+			}
+			input[type=checkbox] {
+				-webkit-appearance: none;
+				width: 18px;
+				height: 18px;
+				line-height: 1.7em;
+				border: 2px solid #AAA;
+				padding: 0;
+				margin: 0 5px;
+				position: relative;
+			}
+			
+			label {
+				padding: 0;
+				margin: 0 0 10px 0;
+				display: block;
+			}
+
+			input[type='text'] {
+				border: 2px solid #AAA;
+				border-radius: 0;
+				padding: 3px 8px;
+				box-sizing: content-box;
+			}
+
+			input[type=checkbox]:checked:after {
+				font-family: Icomoon;
+				content: '\e0f0';
+				line-height: 1em;
+				font-size: 10px;
+				color: #aaa;
+				position: absolute;
+				top: 2px;
+				left: 2px;
+			}
+
+			.content {
+				width: 100%;
+				height: 100%;
+				background-color: white;
+			}
+			
+			.left {
+				width: 200px;
+				height: 100%;
+				background: red;
+				float: left;
+				overflow-y: auto;
+				background: #e6e6e6;
+				box-shadow: inset 0px 0px 60px -30px black;
+			}
+			.left ul {
+				padding: 0;
+				margin: 0;
+			}
+			.left li {
+				list-style-type: none;
+				background-image: -webkit-linear-gradient(top, #fefefe, #dedede);
+				height: 24px;
+				padding: 0 10px;
+				border: 1px solid #838383;
+				border-radius: 3px;
+				box-shadow: 0 0 10px 0px #d0d0d0;
+				text-shadow: 0 1px white;
+				margin: 10px;
+			}
+			.left li:hover {
+				box-shadow: 0 0 5px 0 #fefefe;
+			}
+			.left li:active {
+				box-shadow: inset 0 0 5px 1px #dedede;
+			}
+			.left li span {
+				text-align: center;
+				line-height: 24px;
+				font-size: 20px;
+				color: #505050;
+				display: block;
+				text-shadow: 0 1px white;
+			}
+			
+			.main {
+				padding: 20px;
+				width: 460px;
+				height: 510px;
+				float: left;
+				box-shadow: inset 0px 0px 60px -30px black;
+				overflow-y: auto;
+			}
+			.bottom {
+				position: fixed;
+				bottom: 0;
+				left: 200px;
+				background: white;
+				width: 500px;
+				height: 50px;
+				line-height: 50px;
+			}
+			textarea {
+				max-width: 100%;
+				max-height: 200px;
+				width: 100%;
+				height: 200px;
+			}
+			
+			.pull-left {
+				float: left;
+			}
+			.pull-right {
+				float: right;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<div class="content">
+			<div class="left">
+				<ul style="display: none;">
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+					<li><span>Test</span></li>
+				</ul>
+			</div>
+			<div class="main">
+				<div data-title="General">
+					<label>
+						<span class="label-desc label-block">Refresh interval</span>
+						<select id="opt_refreshInterval">
+							<option value="30">30 seconds</option>
+							<option value="60">1 minute</option>
+							<option value="120">2 minutes</option>
+							<option value="300">5 minutes</option>
+							<option value="600">10 minutes</option>
+							<option value="900">15 minutes</option>
+						</select>
+					</label>
+					<label>
+						<input id="opt_showNotificationOnline" type="checkbox">
+						<span class="label-desc">Show a notification popup when a player joins a server<br /><small>(Doesn't work correctly when playing in fullscreen mode)</small></span>
+					</label>
+					<label>
+						<input id="opt_playSoundOnline" type="checkbox">
+						<span class="label-desc">Play a sound when a player joins a server</span>
+						<a href="#" class="icomoon-play-3 prepros-button" onclick="Sound.play('notify.ogg');"><span>Preview</span></a>
+					</label>
+					<label>
+						<input id="opt_flashWindowOnline" type="checkbox">
+						<span class="label-desc">Flash the window when a player joins a server</span>
+					</label>
+					<label>
+						<input id="opt_showNotificationChangeServer" type="checkbox">
+						<span class="label-desc">Also notify when the player switches to another server</small></span>
+					</label>
+					<label>
+						<input id="opt_minimizeToTray" type="checkbox">
+						<span class="label-desc">Minimize to tray</span>
+					</label>
+					<label>
+						<input id="opt_runAtStartup" class="platform platform-win32" type="checkbox">
+						<span class="label-desc">Run at system startup</span>
+					</label>
+					<label>
+						<input id="opt_startAsMinimized" type="checkbox">
+						<span class="label-desc">Launch the application in a minimized state</span>
+					</label>
+				</div>
+			</div>
+			
+			<div class="bottom">
+				<div class="alert alert-danger pull-left" style="margin-left: 20px;">
+					<i class="icomoon-info"></i> These settings might hurt, Use with caution !
+				</div>
+				
+				<button onclick="save();" class="pull-right prepros-button" style="margin: 10px;">Save</button>
+				<button onclick="cancel();" class="pull-right prepros-button" style="margin: 10px;">Cancel</button>
+			</div>
+		</div>
+	</body>
+</html>

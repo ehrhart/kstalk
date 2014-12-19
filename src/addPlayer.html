@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<meta charset="UTF-8" />
+		<title>KStalk</title>
+		
+		<link href="assets/css/style.css" rel="stylesheet">
+		
+		<script>
+			window.addEventListener('keydown', function(e) {
+				if (e.which == 123) { // F12
+					e.preventDefault();
+					require('nw.gui').Window.get().showDevTools();
+				} else if (e.which == 116) { // F5
+					e.preventDefault();
+					require('nw.gui').Window.get().reload();
+				} else if (e.which == 13) { // Return
+					var name = $('textarea').length > 0 ? $('textarea').val().split('\n') : $('input[data-id="name"]').val(); // TODO: hack
+					if (name.length > 0) {
+						e.preventDefault();
+						submit();
+					}
+				} else if (e.which == 27) { // Escape
+					cancel();
+				}
+			});
+		</script>
+		<script src="lib/jquery.js"></script>
+		<script src="lib/jquery-ui.js"></script>
+		<script>
+			function submit() {
+				var name = $('textarea').length > 0 ? $('textarea').val().split('\n') : $('input[data-id="name"]').val(); // TODO: hack
+				global.ret = {};
+				if (name.length > 0) {
+					global.ret = {
+						name: name
+					};
+				}
+				require('nw.gui').Window.get().close();
+			}
+			
+			function cancel() {
+				global.ret = {};
+				require('nw.gui').Window.get().close();
+			}
+			
+			function addMultiplePlayers(el) {
+				var $input = $('input[data-id="name"]');
+				$('.label-desc').html('Players names (10 max):');
+				$input.replaceWith('<textarea data-id="name" style="width: 165px">' + $input.val() + '</textarea>');
+				$(el).hide();
+			}
+			
+			$(document).ready(function() {
+				var val = $('input[data-id="name"]').val();
+				$('input[data-id="name"]').focus().val(val);
+				$(document).on('click', 'button', function() {
+					var action = $(this).data('action');
+					if (action == 'submit') {
+						submit();
+					} else if (action == 'cancel') {
+						cancel();
+					}
+				});
+			});
+		</script>
+	</head>
+	
+	<body style="padding: 20px; width: 170px;">
+		<div>
+			<label>
+				<span class="label-desc label-block">Player name:</span>
+				<input data-id="name" type="text" value="">
+				<a href="#" onclick="addMultiplePlayers(this);">Add multiple players</a>
+			</label>
+		</div>
+		<button data-action="submit" class="pull-left">Add</button>
+		<button data-action="cancel" class="pull-right">Cancel</button>
+	</body>
+</html>
