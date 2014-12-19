@@ -302,7 +302,6 @@
 			$message  = 'This version is too old! Please download the latest version here: <a href="#" onclick="gui.Shell.openExternal(\'' . $DOWNLOAD_LINK . '\');">' . $DOWNLOAD_LINK . '</a>';
 		}
 		print json_encode(array('success' => $success, 'forceUpdate' => $forceUpdate, 'message' => $message), JSON_PRETTY_PRINT);
-		mysql_query('INSERT INTO `logs` VALUES(NULL, "New connection from ' . $_SERVER['REMOTE_ADDR'] . ' (v' . $v_build .')", NOW())');
 	} else if (isset($_GET['stats'])) {
 		$res = mysql_query('SELECT DISTINCT COUNT(ip) AS `count` FROM `connections` WHERE UNIX_TIMESTAMP(`lastUpdate`) >= "' . (time()-520) . '"');
 		$active = 0;
